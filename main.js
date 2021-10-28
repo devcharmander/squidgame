@@ -45,11 +45,11 @@ loader.load( './model/scene.gltf', function ( gltf ){
 
 function lookBackward(){
     gsap.to(doll.rotation, {duration: .45, y: -3.15})
-    setTimeout(() => dallFacingBack = true, 150)
+    setTimeout(() => dallFacingBack = false, 450)
 }
 function lookForward(){
     gsap.to(doll.rotation, {duration: .45, y: 0})
-    setTimeout(() => dallFacingBack = false, 450)
+    setTimeout(() => dallFacingBack = true, 150)
 }
 
 function createCube(size, posX, rotY = 0, color = 0xfbc851){
@@ -138,23 +138,32 @@ async function delay(ms){
     return new Promise(resolve => setTimeout(resolve, ms))
 }
 
-const player1 = new Player("Player 1", .25, .3, 0xD1FFC6)
-const player2 = new Player("Player 2", .25, -.3, 0xFFCFD2)
+var p1name =""
+var p2name =""
+console.log(p1name,p2name) 
+if (p1name ==""){
+    p1name = "Player 1"
+}
+if (p2name ==""){
+    p2name = "Player 2"
+}
+const player1 = new Player(p1name, .25, .3, 0xD1FFC6)
+const player2 = new Player(p2name, .25, -.3, 0xFFCFD2)
 
-const players = [
+var players = [
     {
         player: player1,
         key: "ArrowUp",
-        name: "Player 1"
+        name: p1name
     },
     {
         player: player2,
         key: "w",
-        name: "Player 2"
+        name: p2name
     }
 ]
 
-const TIME_LIMIT = 15
+const TIME_LIMIT = 25
 async function init(){
     await delay(500)
     text.innerText = "Starting in 3"
@@ -198,6 +207,7 @@ async function startDall(){
 
 startBtn.addEventListener('click', () => {
     if(startBtn.innerText == "START"){
+
         init()
         document.querySelector('.modal').style.display = "none"
     }
@@ -205,6 +215,10 @@ startBtn.addEventListener('click', () => {
 
 function animate(){
     renderer.render( scene, camera )
+    p1name = document.getElementById("player1").value;
+    p2name = document.getElementById("player2").value
+    players[0].name = p1name
+    players[1].name = p2name
     players.map(player => player.player.update())
     if(gameStat == "ended") return
     requestAnimationFrame( animate )
