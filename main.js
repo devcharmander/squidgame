@@ -138,30 +138,7 @@ async function delay(ms){
     return new Promise(resolve => setTimeout(resolve, ms))
 }
 
-var p1name =""
-var p2name =""
-console.log(p1name,p2name) 
-if (p1name ==""){
-    p1name = "Player 1"
-}
-if (p2name ==""){
-    p2name = "Player 2"
-}
-const player1 = new Player(p1name, .25, .3, 0xD1FFC6)
-const player2 = new Player(p2name, .25, -.3, 0xFFCFD2)
 
-var players = [
-    {
-        player: player1,
-        key: "ArrowUp",
-        name: p1name
-    },
-    {
-        player: player2,
-        key: "w",
-        name: p2name
-    }
-]
 
 const TIME_LIMIT = 25
 async function init(){
@@ -179,8 +156,9 @@ async function init(){
 }
 
 let gameStat = "loading"
-
+var players 
 function start(){
+    players = definePlayers()
     gameStat = "started"
     const progressBar = createCube({w: 8, h: .1, d: 1}, 0, 0, 0xebaa12)
     progressBar.position.y = 3.35
@@ -207,22 +185,46 @@ async function startDall(){
 
 startBtn.addEventListener('click', () => {
     if(startBtn.innerText == "START"){
-
         init()
         document.querySelector('.modal').style.display = "none"
     }
 })
 
+function definePlayers(){
+        var p1name = document.getElementById("player1").value
+        var p2name = document.getElementById("player2").value
+        if (p1name ==""){
+            p1name = "Player 1"
+        }
+        if (p2name ==""){
+            p2name = "Player 2"
+        }
+        const player1 = new Player(p1name, .25, .3, 0xD1FFC6)
+        const player2 = new Player(p2name, .25, -.3, 0xFFCFD2)
+        
+        var players = [
+            {
+                player: player1,
+                key: "ArrowUp",
+                name: p1name
+            },
+            {
+                player: player2,
+                key: "w",
+                name: p2name
+            }
+        ]
+        return players
+}
+
 function animate(){
     renderer.render( scene, camera )
-    p1name = document.getElementById("player1").value;
-    p2name = document.getElementById("player2").value
-    players[0].name = p1name
-    players[1].name = p2name
+    //players = definePlayers()
     players.map(player => player.player.update())
     if(gameStat == "ended") return
     requestAnimationFrame( animate )
 }
+var players = definePlayers()
 animate()
 
 window.addEventListener( "keydown", function(e){
